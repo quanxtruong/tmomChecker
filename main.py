@@ -91,7 +91,12 @@ def send_email_alert(event_num):
 if __name__ == "__main__":
     try:
         for event_num in EVENT_CITY:
+            city = EVENT_CITY[event_num]
             if process_page(event_num):
+                print(f"🔍 Checking {city}...")
                 send_email_alert(event_num)
+            else:
+                print(f"🛑 Sign-ups not available for {city}")
+
     except Exception as e:
         print("Error in main loop:", e)

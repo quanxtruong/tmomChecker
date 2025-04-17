@@ -1,0 +1,32 @@
+name: TMOM Signup Notifier
+
+on:
+  schedule:
+    - cron: '0 14 */2 * *'  # Every other day at 9AM CST (14:00 UTC)
+  workflow_dispatch:      # Allows you to run it manually
+
+jobs:
+  check-signups:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run TMOM signup checker
+        env:
+          EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+          RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL }}
+          GITHUB_ACTIONS: true
+        run: main.py
