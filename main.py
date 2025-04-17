@@ -27,7 +27,7 @@ def process_page(event_num):
     response = requests.get(f"https://tmomvolunteer.org/event/{event_num}")
     soup = BeautifulSoup(response.content, 'html.parser')
     unavailable_msg = soup.find("div", id="registration")
-    if unavailable_msg and "Registration for this event is currently unavailable." in unavailable_msg.text:
+    if unavailable_msg and "Registration for this event is currently unavailable" in unavailable_msg.text:
         return False
     return True
 
