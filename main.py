@@ -31,6 +31,24 @@ def process_page(event_num):
         return False
     return True
 
+def save_signup_status(status_dict, path="status.json"):
+    try:
+        with open(path, "w") as f:
+            json.dump(status_dict, f, indent=2)
+        print(f"Status saved to {path}")
+    except Exception as e:
+        print("Failed to save status:", e)
+
+def load_signup_status(path="status.json"):
+    try:
+        with open(path, "r") as f:
+            status_dict = json.load(f)
+        return status_dict
+    except Exception as e:
+        print("❌ Failed to load status:", e)
+        return {}
+
+
 def send_email_alert(event_num):
     event_url = f"https://tmomvolunteer.org/event/{event_num}"
     city = EVENT_CITY[event_num]
@@ -84,19 +102,25 @@ def send_email_alert(event_num):
             server.starttls()
             server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
             server.sendmail(EMAIL_ADDRESS, RECIPIENT_EMAIL, msg.as_string())
-        print(f"📧 Email sent: Sign-ups available for TMOM in {city}")
+        print(f"Email sent: Sign-ups available for TMOM in {city}")
     except Exception as e:
-        print("❌ Failed to send email:", e)
+        print("Failed to send email:", e)
 
 if __name__ == "__main__":
     try:
+        status_dict = {}
+        prev_status = load_signup_status()
         for event_num in EVENT_CITY:
             city = EVENT_CITY[event_num]
-            if process_page(event_num):
-                print(f"🔍 Checking {city}...")
+            is_available = process_page(event_num)
+            status_dict[city] = is_available
+            if is_available and prev_status.get(city, False) == False:
                 send_email_alert(event_num)
             else:
                 print(f"🛑 Sign-ups not available for {city}")
-
+        save_signup_status(status_dict)
     except Exception as e:
         print("Error in main loop:", e)
+
+
+
