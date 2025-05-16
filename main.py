@@ -116,6 +116,8 @@ if __name__ == "__main__":
             status_dict[city] = is_available
             if is_available and prev_status.get(city, False) == False:
                 send_email_alert(event_num)
+            elif prev_status.get(city, False) == True:
+                print(f"Sign-ups already sent for {city}")
             else:
                 print(f"🛑 Sign-ups not available for {city}")
         save_signup_status(status_dict)

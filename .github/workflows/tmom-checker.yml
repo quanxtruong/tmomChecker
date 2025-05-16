@@ -2,7 +2,7 @@ name: TMOM Signup Notifier
 
 on:
   schedule:
-    - cron: '0 14 */2 * *'  # Every other day at 9AM CST (14:00 UTC)
+    - cron: '0 14 * * *'  # Every day at 9AM CST (14:00 UTC)
   workflow_dispatch:      # Allows you to run it manually
 
 jobs:
